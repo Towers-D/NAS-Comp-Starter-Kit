@@ -3,13 +3,25 @@ Hi, thanks for participating in the 4th NAS Unseen Dataset Competition!
 
 # Contents
 The starting kit contains the following:
-* `datasets/`: This contains the first set of datasets in the competition, broken into train, valid, and test splits. You are free to open these up and play with them as you wish as you design your algorithm.  (Note, on the competition servers you will be unable to access any of `test_y.npy` files as they will not exist until after your submission runs, for the purposes of competition integrity)
 * `evaluation/`: These are copies of scripts that will be used to evaluate your submission on our servers.
   * `main.py`: The main competition pipeline. This will load each dataset, pass it through your pipeline, and then produce test predictions
   * `score.py`: The scoring script, which will compare the test predictions from main.py and compare it against the true labels. 
 * `submission_template/`: This contains everything you need to implement to create a valid submission. See the included README within for more details
 * `submission_example/`: Here's an example submission we made, for reference
 * `Makefile`: Some scripts that will let you build and test your submission in a copy of our server evaluation pipeline, more details on this in the "Testing your Submission" section
+
+# Datasets
+The final datasets your work will be evaluated on will be kept hidden until the end of the competition. However, below we have provided links to datasets created for previous iterations of the competition. Please create a `datasets` directory in the main folder of the starting kit and add datasets, either from our collection or elsewhere.
+
+Our pipeline and DataLoaders are expecting each dataset to be contained in its own folder with six NumPy files for the training, validation, and testing data, split between images and labels. Furthermore, a `metadata` file is expected containing the input shape, codename, benchmark, and number of classes. See the datasets we created (linked below), for the appropriate structure.
+
+- AddNIST: [https://doi.org/10.25405/data.ncl.24574354.v1](https://doi.org/10.25405/data.ncl.24574354.v1)
+- Language: [https://doi.org/10.25405/data.ncl.24574729.v1](https://doi.org/10.25405/data.ncl.24574729.v1)
+- MultNIST: [https://doi.org/10.25405/data.ncl.24574678.v1](https://doi.org/10.25405/data.ncl.24574678.v1)
+- CIFARTile: [https://doi.org/10.25405/data.ncl.24551539.v1](https://doi.org/10.25405/data.ncl.24551539.v1)
+- Gutenberg: [https://doi.org/10.25405/data.ncl.24574753.v1](https://doi.org/10.25405/data.ncl.24574753.v1)
+- GeoClassing: [https://doi.org/10.25405/data.ncl.24050256.v2](https://doi.org/10.25405/data.ncl.24050256.v2)
+- Chesseract: [https://doi.org/10.25405/data.ncl.24118743.v1](https://doi.org/10.25405/data.ncl.24118743.v1)
 
 # Writing Your Submission
 In this competition, you will be asked to produce three components:
