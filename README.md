@@ -20,7 +20,7 @@ Our pipeline and DataLoaders are expecting each dataset to be contained in its o
 - MultNIST: [https://doi.org/10.25405/data.ncl.24574678.v1](https://doi.org/10.25405/data.ncl.24574678.v1)
 - CIFARTile: [https://doi.org/10.25405/data.ncl.24551539.v1](https://doi.org/10.25405/data.ncl.24551539.v1)
 - Gutenberg: [https://doi.org/10.25405/data.ncl.24574753.v1](https://doi.org/10.25405/data.ncl.24574753.v1)
-- GeoClassing: [https://doi.org/10.25405/data.ncl.24050256.v2](https://doi.org/10.25405/data.ncl.24050256.v2)
+- GeoClassing: [https://doi.org/10.25405/data.ncl.24050256](https://doi.org/10.25405/data.ncl.24050256)
 - Chesseract: [https://doi.org/10.25405/data.ncl.24118743](https://doi.org/10.25405/data.ncl.24118743)
 
 # Writing Your Submission
