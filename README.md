@@ -21,7 +21,7 @@ Our pipeline and DataLoaders are expecting each dataset to be contained in its o
 - CIFARTile: [https://doi.org/10.25405/data.ncl.24551539.v1](https://doi.org/10.25405/data.ncl.24551539.v1)
 - Gutenberg: [https://doi.org/10.25405/data.ncl.24574753.v1](https://doi.org/10.25405/data.ncl.24574753.v1)
 - GeoClassing: [https://doi.org/10.25405/data.ncl.24050256.v2](https://doi.org/10.25405/data.ncl.24050256.v2)
-- Chesseract: [https://doi.org/10.25405/data.ncl.24118743.v1](https://doi.org/10.25405/data.ncl.24118743.v1)
+- Chesseract: [https://doi.org/10.25405/data.ncl.24118743](https://doi.org/10.25405/data.ncl.24118743)
 
 # Writing Your Submission
 In this competition, you will be asked to produce three components:
