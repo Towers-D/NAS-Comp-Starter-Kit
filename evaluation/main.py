@@ -95,7 +95,7 @@ if __name__ == '__main__':
     try:
         # print main header
         print("=" * 75)
-        print("="*13 + "    Your CVPR-NAS 2022 Submission is running     " + "="*13)
+        print("="*13 + "    Your Unseen Data 2024 Submission is running     " + "="*13)
         print("="*75)
 
         # start tracking submission runtime

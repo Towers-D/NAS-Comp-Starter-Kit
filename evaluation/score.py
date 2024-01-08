@@ -10,7 +10,7 @@ if __name__ == '__main__':
     try:
         # print main header
         print("=" * 75)
-        print("="*13 + "    Your CVPR-NAS 2022 Submission is scoring     " + "="*13)
+        print("="*13 + "    Your Unseen Data 2024 Submission is scoring     " + "="*13)
         print("="*75)
 
         # iterate through datasets

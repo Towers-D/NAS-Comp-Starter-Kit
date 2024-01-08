@@ -1,4 +1,4 @@
-# CVPR-NAS 2022 Submission Template
+# Unseen Data 2024 Submission Template
 
 ## Writing your Submission
 For a valid submission, there are a number of functions with this template that need to be implemented. In the 
