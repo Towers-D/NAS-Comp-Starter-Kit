@@ -1,0 +1,15 @@
+# choose correct CUDA version for your system. The example submission was evaluated on CUDA 11.3:
+-f https://download.pytorch.org/whl/cu113/torch_stable.html
+torch==1.10.1+cu113
+torchvision==0.11.2+cu113
+
+# for CUDA 10.2, uncomment the following:
+# torch
+# torchvision
+
+# for CPU only:
+# -f https://download.pytorch.org/whl/cpu/torch_stable.html
+# torch==1.10.1+cpu
+# torchvision==0.11.2+cpu
+
+sklearn
