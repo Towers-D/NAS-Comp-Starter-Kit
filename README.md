@@ -20,8 +20,8 @@ Our pipeline and DataLoaders are expecting each dataset to be contained in its o
 - MultNIST: [https://doi.org/10.25405/data.ncl.24574678.v1](https://doi.org/10.25405/data.ncl.24574678.v1)
 - CIFARTile: [https://doi.org/10.25405/data.ncl.24551539.v1](https://doi.org/10.25405/data.ncl.24551539.v1)
 - Gutenberg: [https://doi.org/10.25405/data.ncl.24574753.v1](https://doi.org/10.25405/data.ncl.24574753.v1)
-- GeoClassing: [https://doi.org/10.25405/data.ncl.24050256](https://doi.org/10.25405/data.ncl.24050256)
-- Chesseract: [https://doi.org/10.25405/data.ncl.24118743](https://doi.org/10.25405/data.ncl.24118743)
+- GeoClassing: [https://doi.org/10.25405/data.ncl.24050256.v3](https://doi.org/10.25405/data.ncl.24050256.v3)
+- Chesseract: [https://doi.org/10.25405/data.ncl.24118743.v2](https://doi.org/10.25405/data.ncl.24118743.v2)
 
 # Writing Your Submission
 In this competition, you will be asked to produce three components:
