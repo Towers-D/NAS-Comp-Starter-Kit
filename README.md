@@ -1,6 +1,8 @@
 # Unseen Data 2024 Starting Kit
 Hi, thanks for participating in the 4th NAS Unseen Dataset Competition!
 
+To find out more information, including dates, please visit our website: [https://www.nascompetition.com](https://www.nascompetition.com)
+
 # Contents
 The starting kit contains the following:
 * `evaluation/`: These are copies of scripts that will be used to evaluate your submission on our servers.
