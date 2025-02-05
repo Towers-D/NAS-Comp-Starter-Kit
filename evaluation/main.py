@@ -4,7 +4,11 @@ import numpy as np
 import pickle as pkl
 import os
 import time
+import sys
 import traceback
+
+from time import sleep
+from threading import Thread, Event
 
 import torch
 from torch.utils.data import RandomSampler
@@ -71,12 +75,18 @@ def show_time(seconds):
 
 # keep a counter of available time
 class Clock:
-    def __init__(self, time_available):
-        self.start_time =  time.time()
-        self.total_time = time_available
+    def __init__(self, time_limit_in_hours):
+        self.start_time =  time.perf_counter()
+        self.time_limit = self.start_time + (time_limit_in_hours * 60 * 60)
 
     def check(self):
-        return self.total_time + self.start_time - time.time()
+        return self.time_limit + self.start_time - time.time()
+
+
+def countdown(e:Event, time_limit:int):
+    while time.perf_counter() < time_limit:
+        sleep(1)
+    e.set()
 
 
 # === MODEL ANALYSIS ===================================================================================================
@@ -88,18 +98,31 @@ def general_num_params(model):
 # === MAIN =============================================================================================================
 # the available runtime will change at various stages of the competition, but feel free to change for local tests
 # note, this is approximate, your runtime will be controlled externally by our server
-total_runtime_hours = 2
-total_runtime_seconds = total_runtime_hours * 60 * 60
-
 def main():
     # print main header
-        print("=" * 78)
-        print("="*13 + "    Your Unseen Data 2024 Submission is running     " + "="*13)
-        print("="*78)
+    print("=" * 78)
+    print("="*13 + "    Your Unseen Data 2024 Submission is running     " + "="*13)
+    print("="*78)
 
-        # start tracking submission runtime
-        runclock = Clock(total_runtime_seconds)
+    # start tracking submission runtime
+    runclock = Clock(0.1)
 
+    e = Event()
+
+    t1 = Thread(target=run_submission, args=[runclock])
+    t2 = Thread(target=countdown, args=[e, runclock.time_limit])
+
+    t1.daemon = True
+    t2.daemon = True
+
+    t1.start()
+    t2.start()
+
+    e.wait()
+    print("Submission exceeded time_limit")
+    sys.exit()
+
+def run_submission(runclock:Clock):
         # iterate over datasets in the datasets directory
         for dataset in os.listdir("datasets"):
             # load and display data info
@@ -148,9 +171,4 @@ def main():
             print()
 
 if __name__ == '__main__':
-    # this try/except statement will ensure that exceptions are logged when running from the makefile
-    try:
-        main()
-    except Exception as e:
-        print(e)
-        print(traceback.format_exc())
+    main()
