@@ -4,6 +4,7 @@ import numpy as np
 import pickle as pkl
 import os
 import time
+import traceback
 
 import torch
 from torch.utils.data import RandomSampler
@@ -90,13 +91,11 @@ def general_num_params(model):
 total_runtime_hours = 2
 total_runtime_seconds = total_runtime_hours * 60 * 60
 
-if __name__ == '__main__':
-    # this try/except statement will ensure that exceptions are logged when running from the makefile
-    try:
-        # print main header
-        print("=" * 75)
+def main():
+    # print main header
+        print("=" * 78)
         print("="*13 + "    Your Unseen Data 2024 Submission is running     " + "="*13)
-        print("="*75)
+        print("="*78)
 
         # start tracking submission runtime
         runclock = Clock(total_runtime_seconds)
@@ -147,5 +146,11 @@ if __name__ == '__main__':
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
             print()
+
+if __name__ == '__main__':
+    # this try/except statement will ensure that exceptions are logged when running from the makefile
+    try:
+        main()
     except Exception as e:
         print(e)
+        print(traceback.format_exc())
