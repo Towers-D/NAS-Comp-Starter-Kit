@@ -1,1 +1,7 @@
 **/*.pyc
+datasets
+datasets/*
+package
+package/*
+scoring
+scoring/*

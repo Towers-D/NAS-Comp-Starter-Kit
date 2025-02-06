@@ -4,6 +4,11 @@ import numpy as np
 import pickle as pkl
 import os
 import time
+import sys
+import traceback
+
+from time import sleep
+from threading import Thread, Event
 
 import torch
 from torch.utils.data import RandomSampler
@@ -70,12 +75,24 @@ def show_time(seconds):
 
 # keep a counter of available time
 class Clock:
-    def __init__(self, time_available):
-        self.start_time =  time.time()
-        self.total_time = time_available
+    def __init__(self, time_limit_in_hours):
+        self.start_time =  time.perf_counter()
+        self.time_limit = self.start_time + (time_limit_in_hours * 60 * 60)
 
     def check(self):
-        return self.total_time + self.start_time - time.time()
+        return (self.time_limit - time.perf_counter())
+
+
+def countdown(e:Event, time_limit:int):
+    counter = 0
+    while time.perf_counter() < time_limit:
+        counter += 1
+        if counter == 10:
+            print(f'Time Remaining: {show_time(time_limit - time.perf_counter())}')
+            counter = 0
+        sleep(1)
+    print("Submission exceeded time_limit")
+    e.set()
 
 
 # === MODEL ANALYSIS ===================================================================================================
@@ -87,26 +104,37 @@ def general_num_params(model):
 # === MAIN =============================================================================================================
 # the available runtime will change at various stages of the competition, but feel free to change for local tests
 # note, this is approximate, your runtime will be controlled externally by our server
-total_runtime_hours = 2
-total_runtime_seconds = total_runtime_hours * 60 * 60
+def main():
+    # print main header
+    print("=" * 78)
+    print("="*13 + "    Your Unseen Data 2024 Submission is running     " + "="*13)
+    print("="*78)
 
-if __name__ == '__main__':
-    # this try/except statement will ensure that exceptions are logged when running from the makefile
-    try:
-        # print main header
-        print("=" * 75)
-        print("="*13 + "    Your Unseen Data 2024 Submission is running     " + "="*13)
-        print("="*75)
+    # start tracking submission runtime
+    runclock = Clock(0.1)
 
-        # start tracking submission runtime
-        runclock = Clock(total_runtime_seconds)
+    e = Event()
 
+    t1 = Thread(target=run_submission, args=[e, runclock])
+    t2 = Thread(target=countdown, args=[e, runclock.time_limit])
+
+    t1.daemon = True
+    t2.daemon = True
+
+    t1.start()
+    t2.start()
+
+    e.wait()
+    return
+    #sys.exit()
+
+def run_submission(e:Event, runclock:Clock):
         # iterate over datasets in the datasets directory
         for dataset in os.listdir("datasets"):
             # load and display data info
             (train_x, train_y), (valid_x, valid_y), (test_x), metadata = load_datasets(dataset, truncate=False)
             metadata['time_remaining'] = runclock.check()
-            this_dataset_start_time = time.time()
+            this_dataset_start_time = time.perf_counter()
 
             print("="*10 + " Dataset {:^10} ".format(metadata['codename']) + "="*45)
             print("  Metadata:")
@@ -142,10 +170,12 @@ if __name__ == '__main__':
             print("\n=== Predicting ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
             predictions = trainer.predict(test_loader)
-            run_data = {'Runtime': float(np.round(time.time()-this_dataset_start_time, 2)), 'Params': model_params}
+            run_data = {'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
-            print()
-    except Exception as e:
-        print(e)
+            print("Model Training and Prediction Complete")
+            e.set()
+
+if __name__ == '__main__':
+    main()

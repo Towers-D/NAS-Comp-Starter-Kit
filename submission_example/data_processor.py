@@ -6,7 +6,9 @@ import numpy as np
 class Dataset(torch.utils.data.Dataset):
     def __init__(self, x, y, train=False, transform=None):
         self.x = torch.tensor(x)
-
+        if (len(self.x.shape) == 3):
+            self.x = torch.reshape(self.x, (self.x.shape[0], 1, self.x.shape[1], self.x.shape[2]))
+        
         # the test dataset has no labels, so we don't need to care about self.y
         if y is None:
             self.y = None
