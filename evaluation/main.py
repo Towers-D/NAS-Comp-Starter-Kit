@@ -91,6 +91,7 @@ def countdown(e:Event, time_limit:int):
             print(f'Time Remaining: {show_time(time_limit - time.perf_counter())}')
             counter = 0
         sleep(1)
+    print("Submission exceeded time_limit")
     e.set()
 
 
@@ -124,8 +125,8 @@ def main():
     t2.start()
 
     e.wait()
-    print("Submission exceeded time_limit")
-    sys.exit()
+    return
+    #sys.exit()
 
 def run_submission(e:Event, runclock:Clock):
         # iterate over datasets in the datasets directory
@@ -173,6 +174,7 @@ def run_submission(e:Event, runclock:Clock):
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
+            print("Model Training and Prediction Complete")
             e.set()
 
 if __name__ == '__main__':
