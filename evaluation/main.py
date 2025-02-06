@@ -128,7 +128,7 @@ def run_submission(runclock:Clock):
             # load and display data info
             (train_x, train_y), (valid_x, valid_y), (test_x), metadata = load_datasets(dataset, truncate=False)
             metadata['time_remaining'] = runclock.check()
-            this_dataset_start_time = time.time()
+            this_dataset_start_time = time.perf_counter()
 
             print("="*10 + " Dataset {:^10} ".format(metadata['codename']) + "="*45)
             print("  Metadata:")
@@ -164,7 +164,7 @@ def run_submission(runclock:Clock):
             print("\n=== Predicting ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
             predictions = trainer.predict(test_loader)
-            run_data = {'Runtime': float(np.round(time.time()-this_dataset_start_time, 2)), 'Params': model_params}
+            run_data = {'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
