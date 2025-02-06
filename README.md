@@ -1,7 +1,7 @@
-# Unseen Data 2024 Starting Kit
+# Unseen Data 2025 Starting Kit
 Hi, thanks for participating in the 4th NAS Unseen Dataset Competition!
 
-To find out more information, including dates, please visit our website: [https://www.nascompetition.com](https://www.nascompetition.com)
+To find out more information, including dates and rules, please visit our website: [https://www.nascompetition.com](https://www.nascompetition.com).
 
 # Contents
 The starting kit contains the following:
@@ -24,6 +24,9 @@ Our pipeline and DataLoaders are expecting each dataset to be contained in its o
 - Gutenberg: [https://doi.org/10.25405/data.ncl.24574753.v1](https://doi.org/10.25405/data.ncl.24574753.v1)
 - GeoClassing: [https://doi.org/10.25405/data.ncl.24050256.v3](https://doi.org/10.25405/data.ncl.24050256.v3)
 - Chesseract: [https://doi.org/10.25405/data.ncl.24118743.v2](https://doi.org/10.25405/data.ncl.24118743.v2)
+- Sudoku: [https://doi.org/10.25405/data.ncl.26976121.v1](https://doi.org/10.25405/data.ncl.26976121.v1)
+- Voxel: [https://doi.org/10.25405/data.ncl.26970223.v1](https://doi.org/10.25405/data.ncl.26970223.v1)
+- Myofibre: [https://doi.org/10.25405/data.ncl.26969998.v1](https://doi.org/10.25405/data.ncl.26969998.v1)
 
 # Writing Your Submission
 In this competition, you will be asked to produce three components:
