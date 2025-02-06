@@ -89,6 +89,7 @@ def countdown(e:Event, time_limit:int):
         counter += 1
         if counter == 10:
             print(f'Time Remaining: {show_time(time_limit - time.perf_counter())}')
+            counter = 0
         sleep(1)
     e.set()
 
