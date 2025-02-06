@@ -174,7 +174,7 @@ def run_submission(runclock:Clock):
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
-            print()
+            print("saved")
 
 if __name__ == '__main__':
     main()
