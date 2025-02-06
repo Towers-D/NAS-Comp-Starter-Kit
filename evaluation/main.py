@@ -114,7 +114,7 @@ def main():
 
     e = Event()
 
-    t1 = Thread(target=run_submission, args=[runclock])
+    t1 = Thread(target=run_submission, args=[e, runclock])
     t2 = Thread(target=countdown, args=[e, runclock.time_limit])
 
     t1.daemon = True
@@ -127,7 +127,7 @@ def main():
     print("Submission exceeded time_limit")
     sys.exit()
 
-def run_submission(runclock:Clock):
+def run_submission(e:Event, runclock:Clock):
         # iterate over datasets in the datasets directory
         for dataset in os.listdir("datasets"):
             # load and display data info
@@ -169,12 +169,11 @@ def run_submission(runclock:Clock):
             print("\n=== Predicting ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
             predictions = trainer.predict(test_loader)
-            print("predicted")
             run_data = {'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
-            print("saved")
+            e.set()
 
 if __name__ == '__main__':
     main()
