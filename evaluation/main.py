@@ -80,7 +80,7 @@ class Clock:
         self.time_limit = self.start_time + (time_limit_in_hours * 60 * 60)
 
     def check(self):
-        return self.time_limit + self.start_time - time.time()
+        return (self.time_limit - time.perf_counter())
 
 
 def countdown(e:Event, time_limit:int):
