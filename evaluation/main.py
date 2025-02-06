@@ -84,7 +84,11 @@ class Clock:
 
 
 def countdown(e:Event, time_limit:int):
+    counter = 0
     while time.perf_counter() < time_limit:
+        counter += 1
+        if counter == 10:
+            print(f'Time Remaining: {show_time(time_limit - time.perf_counter())}')
         sleep(1)
     e.set()
 
@@ -164,6 +168,7 @@ def run_submission(runclock:Clock):
             print("\n=== Predicting ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
             predictions = trainer.predict(test_loader)
+            print("predicted")
             run_data = {'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
                 pkl.dump(run_data, f)

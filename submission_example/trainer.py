@@ -103,10 +103,13 @@ class Trainer:
     """
 
     def predict(self, test_loader):
+        print("start pred")
         self.model.eval()
+        print("evaled")
         predictions = []
         for data in test_loader:
             data = data.to(self.device)
             output = self.model.forward(data)
             predictions += torch.argmax(output, 1).detach().cpu().tolist()
+        print("returned")
         return predictions
