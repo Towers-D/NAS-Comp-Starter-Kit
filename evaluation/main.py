@@ -111,11 +111,11 @@ def main():
     print("="*78)
 
     # start tracking submission runtime
-    runclock = Clock(0.01)
+    runclock = Clock(0.0016)
 
     e = Event()
 
-    t1 = Thread(target=run_submission, args=[e, runclock])
+    t1 = Thread(target=run_wrapper, args=[e, runclock])
     t2 = Thread(target=countdown, args=[e, runclock.time_limit])
 
     t1.daemon = True
@@ -126,9 +126,17 @@ def main():
 
     e.wait()
     return
-    #sys.exit()
 
-def run_submission(e:Event, runclock:Clock):
+def run_wrapper(e:Event, runclock:Clock):
+    try:
+        run_submission(runclock)
+    except Exception as e:
+        print(e)
+        print(traceback.format_exc())
+    e.set()
+
+
+def run_submission(runclock:Clock):
         # iterate over datasets in the datasets directory
         for dataset in os.listdir("datasets"):
             # load and display data info
@@ -175,7 +183,6 @@ def run_submission(e:Event, runclock:Clock):
                 pkl.dump(run_data, f)
             np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
             print("Model Training and Prediction Complete")
-            e.set()
 
 if __name__ == '__main__':
     main()
