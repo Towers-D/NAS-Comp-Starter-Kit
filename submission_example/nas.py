@@ -19,10 +19,11 @@ class NAS:
         You can modify or add anything into the metadata that you wish,
         if you want to pass messages between your classes,
     """
-    def __init__(self, train_loader, valid_loader, metadata):
+    def __init__(self, train_loader, valid_loader, metadata, clock):
         self.train_loader = train_loader
         self.valid_loader = valid_loader
         self.metadata = metadata
+        self.clock = clock
 
 
     """
