@@ -1,5 +1,5 @@
 # Unseen Data 2025 Starting Kit
-Hi, thanks for participating in the 5th NAS Unseen Dataset Competition!
+Hi, thanks for participating in the 5th NAS Unseen-Data Competition!
 
 To find out more information, including dates and rules, please visit our website: [https://www.nascompetition.com](https://www.nascompetition.com).
 
@@ -43,7 +43,7 @@ In this competition, you will be asked to produce three components:
  See `submission_template/README.md` for specifics about how to write these, and `submission_example' for an example valid submission
 
 # Runtime
-Inside the `evaluation/main.py` file we create and pass through a runclock, which you can use to check the time_remaining. The default time set with the `TIME_LIMIT` constant is 12 hours. When we test your code in phase two, it will only be given **one** hour. We we will use the **same** submission for the final run which will be given a, as of yet undetermined, amount of runtime. It is your job to use the clock, to manage the amount of time your code has and to adapt to the amount of time given.
+Inside the `evaluation/main.py` file we create a clock that is passed through to the three components listed above. This can use to check the time remaining. The time limit is set with inside `main.py` by the `TIME_LIMIT` constant, by default this is set to 12 hours. When we test your code in phase two, you will only be given **one** hour as we are just testing the code works. We will use the **same** submission from phase 2 for the final run in phase 3. This final run which will be given an unknown amount of runtime. It is your job to use the clock to manage the amount of time your code has and to adapt to the amount of time given.
 
 *Note. this year we have also added code that will terminate a submission once it has exceeded the `TIME_LIMIT`, this is also in `evaluation/main.py`. This countdown is seperate to the clock. We willuse our own versions of `main.py` and `score.py` and any attempts to extend your time limit with result in disqualification.*
 
@@ -66,4 +66,4 @@ To bundle your submission, run:
 
 `make submission=$SUBMISSION_DIRECTORY zip`
 
-Then submit the zip file on the [submission page link here]
+Then submit the zip file by sending it to us via email at [nas-competition-contact@newcastle.ac.uk](nas-competition-contact@newcastle.ac.uk).
