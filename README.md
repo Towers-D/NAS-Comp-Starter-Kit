@@ -42,6 +42,11 @@ In this competition, you will be asked to produce three components:
  
  See `submission_template/README.md` for specifics about how to write these, and `submission_example' for an example valid submission
 
+# Runtime
+Inside the `evaluation/main.py` file we create and pass through a runclock, which you can use to check the time_remaining. The default time set with the `TIME_LIMIT` constant is 12 hours. When we test your code in phase two, it will only be given **one** hour. We we will use the **same** submission for the final run which will be given a, as of yet undetermined, amount of runtime. It is your job to use the clock, to manage the amount of time your code has and to adapt to the amount of time given.
+
+*Note. this year we have also added code that will terminate a submission once it has exceeded the `TIME_LIMIT`, this is also in `evaluation/main.py`. This countdown is seperate to the clock. We willuse our own versions of `main.py` and `score.py` and any attempts to extend your time limit with result in disqualification.*
+
 # Testing Your Submission
 The included Makefile will let you test your submission via the same testing scripts as our servers use. If the Makefile works, then you can be fairly confident your submission will work on our machines. However, you should still be
 careful about things like package imports, because trying to import something that doesn't exist in our environment will break your submission.
