@@ -111,7 +111,7 @@ def main():
     print("="*78)
 
     # start tracking submission runtime
-    runclock = Clock(0.0016)
+    runclock = Clock(2)
 
     e = Event()
 
@@ -151,7 +151,7 @@ def run_submission(runclock:Clock):
             # perform data processing/augmentation/etc using your DataProcessor
             print("\n=== Processing Data ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
-            data_processor = DataProcessor(train_x, train_y, valid_x, valid_y, test_x, metadata)
+            data_processor = DataProcessor(train_x, train_y, valid_x, valid_y, test_x, metadata, runclock)
             train_loader, valid_loader, test_loader = data_processor.process()
             metadata['time_remaining'] = runclock.check()
 
@@ -163,7 +163,7 @@ def run_submission(runclock:Clock):
             # search for best model using your NAS algorithm
             print("\n=== Performing NAS ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
-            model = NAS(train_loader, valid_loader, metadata).search()
+            model = NAS(train_loader, valid_loader, metadata, runclock).search()
             model_params = int(general_num_params(model))
             metadata['time_remaining'] = runclock.check()
 
@@ -171,7 +171,7 @@ def run_submission(runclock:Clock):
             print("\n=== Training ===")
             print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
             device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
-            trainer = Trainer(model, device, train_loader, valid_loader, metadata)
+            trainer = Trainer(model, device, train_loader, valid_loader, metadata, runclock)
             trained_model = trainer.train()
 
             # submit predictions to file
