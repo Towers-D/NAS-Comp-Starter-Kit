@@ -23,12 +23,13 @@ class Trainer:
             'time_remaining': The amount of compute time left for your submission
             plus anything else you added in the DataProcessor or NAS classes
     """
-    def __init__(self, model, device, train_dataloader, valid_dataloader, metadata):
+    def __init__(self, model, device, train_dataloader, valid_dataloader, metadata, clock):
         self.model = model
         self.device = device
         self.train_dataloader = train_dataloader
         self.valid_dataloader = valid_dataloader
         self.metadata = metadata
+        self.clock = clock
 
         # define  training parameters
         self.epochs = 2
