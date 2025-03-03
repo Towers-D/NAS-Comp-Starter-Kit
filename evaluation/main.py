@@ -107,7 +107,7 @@ def general_num_params(model):
 def main():
     # print main header
     print("=" * 78)
-    print("="*13 + "    Your Unseen Data 5 Submission is running     " + "="*13)
+    print("="*13 + "    Your NAS Unseen-Data 2025 Submission is running     " + "="*13)
     print("="*78)
 
     # start tracking submission runtime
