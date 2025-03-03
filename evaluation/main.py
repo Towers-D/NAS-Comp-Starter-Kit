@@ -111,7 +111,7 @@ def main():
     print("="*78)
 
     # start tracking submission runtime
-    runclock = Clock(2)
+    runclock = Clock(12)
 
     e = Event()
 
