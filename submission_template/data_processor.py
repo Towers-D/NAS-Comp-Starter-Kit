@@ -22,7 +22,7 @@ class DataProcessor:
     You can modify or add anything into the metadata that you wish, if you want to pass messages between your classes
 
     """
-    def __init__(self, train_x, train_y, valid_x, valid_y, test_x, metadata):
+    def __init__(self, train_x, train_y, valid_x, valid_y, test_x, metadata, clock):
         pass
 
     """
