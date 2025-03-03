@@ -17,6 +17,8 @@ from nas import NAS
 from data_processor import DataProcessor
 from trainer import Trainer
 
+#Time limit in hours
+TIME_LIMIT = 12
 
 # === DATA LOADING HELPERS =============================================================================================
 # find the dataset filepaths
@@ -111,7 +113,7 @@ def main():
     print("="*78)
 
     # start tracking submission runtime
-    runclock = Clock(12)
+    runclock = Clock(TIME_LIMIT)
 
     e = Event()
 
