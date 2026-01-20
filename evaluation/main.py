@@ -131,8 +131,11 @@ def fail_dataset(metadata):
     with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
         pkl.dump(run_data, f)
 
-def is_out_of_time(clock:Clock, metadata):
+def is_out_of_time(clock:Clock, metadata, grace_time:bool):
     if clock.check() < 0:
+        if grace_time:
+            if clock.check() < 60:
+                print('Out of Time - within 1 minute of finish time - predictions will still be ran - organisers may apply penalty')
         print('\n\n=== Skipping Dataset - Out of Time ===\n\n')
         fail_dataset(metadata)
         return True
@@ -180,11 +183,18 @@ def run_submission(runclock:Clock, dataset:str):
         device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
         trainer = Trainer(model, device, train_loader, valid_loader, metadata, runclock)
         trained_model = trainer.train()
+        
+        if is_out_of_time(IMUT_CLOCK, metadata, True):
+            return
 
         # submit predictions to file
         print("\n=== Predicting ===")
         print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
         predictions = trainer.predict(test_loader)
+
+        run_time = time.perf_counter()-this_dataset_start_time
+        print(f'Run time for {metadata["codename"]}: {run_time}')
+
         run_data = {'Failed': False, 'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
         with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
             pkl.dump(run_data, f)
