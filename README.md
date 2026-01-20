@@ -17,6 +17,11 @@ The final datasets your work will be evaluated on will be kept hidden until the 
 
 Our pipeline and DataLoaders are expecting each dataset to be contained in its own folder with six NumPy files for the training, validation, and testing data, split between images and labels. Furthermore, a `metadata` file is expected containing the input shape, codename, benchmark, and number of classes. See the datasets we created (linked below), for the appropriate structure.
 
+> Important Note: We have updated the 2026 starter kit so that the time limit is defined per dataset. The default is defined in the code as `30 minutes`. To test an modify this, please add `time_limit` as a variable in the metadata file
+>
+>Example metadata for AddNIST with a time limit of 1 hour:<br>
+>`{"num_classes": 20, "input_shape": [50000, 3, 28, 28], "codename": "Adaline", "benchmark":89.850, "time_limit": 1.0} `
+
 - AddNIST: [https://doi.org/10.25405/data.ncl.24574354.v1](https://doi.org/10.25405/data.ncl.24574354.v1)
 - Language: [https://doi.org/10.25405/data.ncl.24574729.v1](https://doi.org/10.25405/data.ncl.24574729.v1)
 - MultNIST: [https://doi.org/10.25405/data.ncl.24574678.v1](https://doi.org/10.25405/data.ncl.24574678.v1)
@@ -27,6 +32,9 @@ Our pipeline and DataLoaders are expecting each dataset to be contained in its o
 - Sudoku: [https://doi.org/10.25405/data.ncl.26976121.v1](https://doi.org/10.25405/data.ncl.26976121.v1)
 - Voxel: [https://doi.org/10.25405/data.ncl.26970223.v1](https://doi.org/10.25405/data.ncl.26970223.v1)
 - Myofibre: [https://doi.org/10.25405/data.ncl.26969998.v1](https://doi.org/10.25405/data.ncl.26969998.v1)
+- GameOfLife: [https://doi.org/10.25405/data.ncl.30000835](https://doi.org/10.25405/data.ncl.30000835)
+- Cryptic: [https://doi.org/10.7488/ds/8054](https://doi.org/10.7488/ds/8054)
+- Windspeed: [https://doi.org/10.7488/ds/8053](https://doi.org/10.7488/ds/8053)
 
 # Writing Your Submission
 In this competition, you will be asked to produce three components:
