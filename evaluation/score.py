@@ -19,32 +19,38 @@ if __name__ == '__main__':
         for dataset in os.listdir("labels"):
             print("== Scoring {} ==".format(dataset))
 
-            # load user predictions from file
             data_path = 'labels/'+dataset
-            labels = np.load(os.path.join(data_path, 'test_y.npy'))
+
             with open(os.path.join(data_path, 'metadata'), "r") as f:
-                metadata = json.load(f)
-            prediction_file = [prediction for prediction in os.listdir('predictions')
-                        if metadata['codename'] == prediction.replace(".npy", "")][0]
-            predictions = np.load('predictions/'+prediction_file)
+                    metadata = json.load(f)
             with open("predictions/{}_stats.pkl".format(metadata['codename']), "rb") as f:
                 run_stats = pkl.load(f)
 
-            # produce accuracy score of predictions
-            labels = labels[:len(predictions)]
+            if (run_stats['Failed']):
+                raw_score = -1
+                adj_score = -10
+            else:
+                # load user predictions from file
+                
+                labels = np.load(os.path.join(data_path, 'test_y.npy'))
+                
+                prediction_file = [prediction for prediction in os.listdir('predictions') if metadata['codename'] == prediction.replace(".npy", "")][0]
+                predictions = np.load('predictions/'+prediction_file)
+                # produce accuracy score of predictions
+                labels = labels[:len(predictions)]
 
-            # normalize score
-            raw_score = 100*accuracy_score(labels, predictions)
-            benchmark = metadata['benchmark']
+                # normalize score
+                raw_score = 100*accuracy_score(labels, predictions)
+                benchmark = metadata['benchmark']
 
-            scaling_factor = 10/(100 - benchmark)
-            adj_score = (raw_score - benchmark) * scaling_factor
-            adj_score = max(-10, adj_score)
+                scaling_factor = 10/(100 - benchmark)
+                adj_score = (raw_score - benchmark) * scaling_factor
+                adj_score = max(-10, adj_score)
             total_score += adj_score
 
             print("Raw Score:    {:.3f}".format(raw_score))
             print("Adj Score:    {:.3f}".format(adj_score))
-            print("Model Params: {:,}".format(run_stats['Params']))
+            print(f'Model Params: {"N/A" if run_stats["Params"] is None else run_stats["Params"]}')
             print("Runtime:      {:,.1f}s".format(run_stats['Runtime']))
             run_stats['Raw_Score'] = float(np.round(raw_score, 3))
             run_stats['Adj_Score'] = float(np.round(adj_score, 3))

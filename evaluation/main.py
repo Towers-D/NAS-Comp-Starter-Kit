@@ -6,6 +6,7 @@ import os
 import time
 import sys
 import traceback
+import copy
 
 from time import sleep
 from threading import Thread, Event
@@ -18,7 +19,7 @@ from data_processor import DataProcessor
 from trainer import Trainer
 
 #Time limit in hours
-TIME_LIMIT = 12
+#TIME_LIMIT = 12
 
 # === DATA LOADING HELPERS =============================================================================================
 # find the dataset filepaths
@@ -85,18 +86,6 @@ class Clock:
         return (self.time_limit - time.perf_counter())
 
 
-def countdown(e:Event, time_limit:int):
-    counter = 0
-    while time.perf_counter() < time_limit:
-        counter += 1
-        if counter == 10:
-            print(f'Time Remaining: {show_time(time_limit - time.perf_counter())}')
-            counter = 0
-        sleep(1)
-    print("Submission exceeded time_limit")
-    e.set()
-
-
 # === MODEL ANALYSIS ===================================================================================================
 def general_num_params(model):
     # return number of differential parameters of input model
@@ -109,82 +98,98 @@ def general_num_params(model):
 def main():
     # print main header
     print("=" * 78)
-    print("="*13 + "    Your NAS Unseen-Data 2025 Submission is running     " + "="*13)
+    print("="*13 + "    Your NAS Unseen-Data 2026 Submission is running     " + "="*13)
     print("="*78)
+    
+    # iterate over datasets in the datasets directory
+    for dataset in os.listdir("datasets"):
+        metadata = load_dataset_metadata(f'datasets/{dataset}')
 
-    # start tracking submission runtime
-    runclock = Clock(TIME_LIMIT)
+        dataset_limit = 0
+        try:
+            dataset_limit = metadata['time_limit']
+        except Exception as ex:
+            print('Your dataset is missing a `time_limit` value in the metadata file, default of 0.5 is applied. Please add a `time_limit` field in the metadata for each dataset')
+            dataset_limit = 0.5
+        # start tracking submission runtime
+        runclock = Clock(dataset_limit)
 
-    e = Event()
+        try:
+            run_submission(runclock, dataset)
+        except Exception as ex:
+            print(ex)
+            print(traceback.format_exc())
+            fail_dataset(metadata)
 
-    t1 = Thread(target=run_wrapper, args=[e, runclock])
-    t2 = Thread(target=countdown, args=[e, runclock.time_limit])
-
-    t1.daemon = True
-    t2.daemon = True
-
-    t1.start()
-    t2.start()
-
-    e.wait()
+        print(f'finished dataset: {metadata["codename"]}')
+    print('done')
     return
 
-def run_wrapper(e:Event, runclock:Clock):
-    try:
-        run_submission(runclock)
-    except Exception as e:
-        print(e)
-        print(traceback.format_exc())
-    e.set()
+def fail_dataset(metadata):
+    print(f'Dataset {metadata["codename"]} failed.')
+    run_data = {'Failed': True, 'Runtime': -1, 'Params': None}
+    with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
+        pkl.dump(run_data, f)
 
+def is_out_of_time(clock:Clock, metadata):
+    if clock.check() < 0:
+        print('\n\n=== Skipping Dataset - Out of Time ===\n\n')
+        fail_dataset(metadata)
+        return True
+    return False
 
-def run_submission(runclock:Clock):
-        # iterate over datasets in the datasets directory
-        for dataset in os.listdir("datasets"):
-            # load and display data info
-            (train_x, train_y), (valid_x, valid_y), (test_x), metadata = load_datasets(dataset, truncate=False)
-            metadata['time_remaining'] = runclock.check()
-            this_dataset_start_time = time.perf_counter()
+def run_submission(runclock:Clock, dataset:str):
+        IMUT_CLOCK = copy.deepcopy(runclock)
+        # load and display data info
+        (train_x, train_y), (valid_x, valid_y), (test_x), metadata = load_datasets(dataset, truncate=False)
+        metadata['time_remaining'] = IMUT_CLOCK.check()
+        this_dataset_start_time = time.perf_counter()
 
-            print("="*10 + " Dataset {:^10} ".format(metadata['codename']) + "="*45)
-            print("  Metadata:")
-            [print("   - {:<20}: {}".format(k, v)) for k,v in metadata.items()]
+        print("="*10 + " Dataset {:^10} ".format(metadata['codename']) + "="*45)
+        print("  Metadata:")
+        [print("   - {:<20}: {}".format(k, v)) for k,v in metadata.items()]
 
-            # perform data processing/augmentation/etc using your DataProcessor
-            print("\n=== Processing Data ===")
-            print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
-            data_processor = DataProcessor(train_x, train_y, valid_x, valid_y, test_x, metadata, runclock)
-            train_loader, valid_loader, test_loader = data_processor.process()
-            metadata['time_remaining'] = runclock.check()
+        # perform data processing/augmentation/etc using your DataProcessor
+        print("\n=== Processing Data ===")
+        print("  Allotted compute time remaining: ~{}".format(show_time(IMUT_CLOCK.check())))
+        if is_out_of_time(IMUT_CLOCK, metadata):
+            return
+        data_processor = DataProcessor(train_x, train_y, valid_x, valid_y, test_x, metadata, runclock)
+        train_loader, valid_loader, test_loader = data_processor.process()
+        metadata['time_remaining'] = IMUT_CLOCK.check()
 
-            # check that the test_loader is configured correctly
-            assert_string = "Test Dataloader is {}, this will break evaluation. Please fix this in your DataProcessor init."
-            assert not isinstance(test_loader.sampler, RandomSampler), assert_string.format("shuffling")
-            assert not test_loader.drop_last, assert_string.format("dropping last batch")
+        # check that the test_loader is configured correctly
+        assert_string = "Test Dataloader is {}, this will break evaluation. Please fix this in your DataProcessor init."
+        assert not isinstance(test_loader.sampler, RandomSampler), assert_string.format("shuffling")
+        assert not test_loader.drop_last, assert_string.format("dropping last batch")
 
-            # search for best model using your NAS algorithm
-            print("\n=== Performing NAS ===")
-            print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
-            model = NAS(train_loader, valid_loader, metadata, runclock).search()
-            model_params = int(general_num_params(model))
-            metadata['time_remaining'] = runclock.check()
+        # search for best model using your NAS algorithm
+        print("\n=== Performing NAS ===")
+        print("  Allotted compute time remaining: ~{}".format(show_time(IMUT_CLOCK.check())))
+        if is_out_of_time(IMUT_CLOCK, metadata):
+            return
+        model = NAS(train_loader, valid_loader, metadata, runclock).search()
+        model_params = int(general_num_params(model))
+        metadata['time_remaining'] = IMUT_CLOCK.check()
 
-            # train model using your Trainer
-            print("\n=== Training ===")
-            print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
-            device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
-            trainer = Trainer(model, device, train_loader, valid_loader, metadata, runclock)
-            trained_model = trainer.train()
+        # train model using your Trainer
+        print("\n=== Training ===")
+        print("  Allotted compute time remaining: ~{}".format(show_time(IMUT_CLOCK.check())))
+        if is_out_of_time(IMUT_CLOCK, metadata):
+            return
+        device = torch.device("cuda") if torch.cuda.is_available() else torch.device('cpu')
+        trainer = Trainer(model, device, train_loader, valid_loader, metadata, runclock)
+        trained_model = trainer.train()
 
-            # submit predictions to file
-            print("\n=== Predicting ===")
-            print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
-            predictions = trainer.predict(test_loader)
-            run_data = {'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
-            with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
-                pkl.dump(run_data, f)
-            np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
-            print("Model Training and Prediction Complete")
+        # submit predictions to file
+        print("\n=== Predicting ===")
+        print("  Allotted compute time remaining: ~{}".format(show_time(runclock.check())))
+        predictions = trainer.predict(test_loader)
+        run_data = {'Failed': False, 'Runtime': float(np.round(time.perf_counter()-this_dataset_start_time, 2)), 'Params': model_params}
+        with open("predictions/{}_stats.pkl".format(metadata['codename']), "wb") as f:
+            pkl.dump(run_data, f)
+        np.save('predictions/{}.npy'.format(metadata['codename']), predictions)
+        print("Model Training and Prediction Complete")
 
 if __name__ == '__main__':
     main()
