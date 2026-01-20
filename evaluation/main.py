@@ -134,7 +134,7 @@ def fail_dataset(metadata):
 def is_out_of_time(clock:Clock, metadata, grace_time:bool):
     if clock.check() < 0:
         if grace_time:
-            if clock.check() < 60:
+            if clock.check() > -60:
                 print('Out of Time - within 1 minute of finish time - predictions will still be ran - organisers may apply penalty')
         print('\n\n=== Skipping Dataset - Out of Time ===\n\n')
         fail_dataset(metadata)
